@@ -2,7 +2,7 @@
 title: RAG Voice Assistant
 emoji: 🎙️
 colorFrom: blue
-colorTo: cyan
+colorTo: indigo
 sdk: docker
 pinned: false
 ---
