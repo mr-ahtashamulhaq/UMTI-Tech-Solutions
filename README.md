@@ -10,7 +10,10 @@ pinned: false
 # RAG Voice Assistant
 
 A production-ready **Retrieval-Augmented Generation (RAG)** assistant that answers questions about your documents by text **or** voice  with spoken audio responses.<br>
-[![Live Demo](https://img.shields.io/badge/Live-Demo-000000?style=for-the-badge&logo=vercel&logoColor=3B82F6)](https://rag-voice-assistant-three.vercel.app)
+
+<a href="https://rag-voice-assistant-three.vercel.app" target="_blank">
+  <img src="https://img.shields.io/badge/Live-Demo-000000?style=for-the-badge&logo=vercel&logoColor=3B82F6" alt="Live Demo">
+</a>
 
 ---
 
