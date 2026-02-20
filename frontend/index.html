@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RAG Voice Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+<style>
+/* ─── Reset ───────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+
+/* ─── Tokens ──────────────────────────────────────────────── */
+:root {
+  --bg:          #0a0a0a;
+  --surface:     #111111;
+  --surface-2:   #161616;
+  --surface-3:   #1c1c1c;
+  --border:      #222222;
+  --border-2:    #2a2a2a;
+  --accent:      #4f8ef7;
+  --accent-dim:  rgba(79,142,247,.12);
+  --accent-glow: rgba(79,142,247,.06);
+  --text-1:      #e8e8e8;
+  --text-2:      #999999;
+  --text-3:      #555555;
+  --red:         #e05c5c;
+  --red-dim:     rgba(224,92,92,.1);
+  --green:       #3ecf7a;
+  --radius:      5px;
+  --sidebar-w:   260px;
+  --transition:  150ms cubic-bezier(.4,0,.2,1);
+}
+
+/* ─── Base ────────────────────────────────────────────────── */
+body {
+  font-family: "Lexend", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text-1);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Layout ──────────────────────────────────────────────── */
+.shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  grid-template-rows: 1fr;
+  min-height: 100vh;
+}
+
+/* ─── Sidebar ─────────────────────────────────────────────── */
+.sidebar {
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 36px 28px;
+  gap: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.sidebar-brand {
+  margin-bottom: 32px;
+}
+.sidebar-brand .wordmark {
+  font-family: "Instrument Serif", Georgia, serif;
+  font-size: 20px;
+  color: var(--text-1);
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+  display: block;
+}
+.sidebar-brand .sub {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-top: 5px;
+  display: block;
+}
+
+/* Status */
+.status-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  margin-bottom: 28px;
+}
+.status-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--text-3);
+  flex-shrink: 0;
+  transition: background var(--transition);
+}
+.status-dot.ok  { background: var(--green); box-shadow: 0 0 6px rgba(62,207,122,.4); }
+.status-dot.err { background: var(--red);   box-shadow: 0 0 6px rgba(224,92,92,.4); }
+.status-label { font-size: 12px; color: var(--text-2); font-weight: 400; }
+
+/* Sidebar divider */
+.sidebar-rule {
+  height: 1px;
+  background: var(--border);
+  margin: 24px 0;
+}
+
+/* Ingest section */
+.sidebar-section-title {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 12px;
+}
+
+.btn-ingest {
+  width: 100%;
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  color: var(--text-1);
+  padding: 9px 14px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  border-radius: var(--radius);
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: border-color var(--transition), background var(--transition);
+}
+.btn-ingest:hover:not(:disabled) {
+  border-color: var(--border-2);
+  background: var(--surface-3);
+}
+.btn-ingest:disabled { opacity: .4; cursor: not-allowed; }
+.btn-ingest .arrow { color: var(--text-3); font-size: 12px; transition: transform var(--transition); }
+.btn-ingest:hover:not(:disabled) .arrow { transform: translateX(2px); }
+
+.ingest-feedback {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--text-2);
+  min-height: 16px;
+  line-height: 1.5;
+}
+.ingest-feedback.ok  { color: var(--green); }
+.ingest-feedback.err { color: var(--red); }
+
+/* Sidebar description */
+.sidebar-desc {
+  margin-top: auto;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+}
+.sidebar-desc p {
+  font-size: 12px;
+  color: var(--text-3);
+  line-height: 1.7;
+}
+
+/* ─── Main panel ──────────────────────────────────────────── */
+.main {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* Top bar */
+.topbar {
+  border-bottom: 1px solid var(--border);
+  padding: 20px 40px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.topbar-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.mode-tab {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--text-3);
+  font-family: "DM Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: color var(--transition), border-color var(--transition);
+}
+.mode-tab.active {
+  color: var(--text-1);
+  border-color: var(--border-2);
+  background: var(--surface-2);
+}
+.mode-tab:hover:not(.active) { color: var(--text-2); }
+
+/* Query area */
+.query-area {
+  padding: 36px 40px 32px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.query-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 14px;
+}
+
+/* Text panel */
+.text-panel { display: flex; flex-direction: column; gap: 12px; }
+
+.input-row {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+
+textarea#text-input {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius);
+  color: var(--text-1);
+  font-family: "DM Sans", sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  padding: 12px 16px;
+  resize: none;
+  min-height: 52px;
+  max-height: 160px;
+  outline: none;
+  transition: border-color var(--transition);
+  overflow-y: auto;
+}
+textarea#text-input:focus { border-color: var(--accent); }
+textarea#text-input::placeholder { color: var(--text-3); }
+
+.btn-ask {
+  background: var(--accent);
+  border: none;
+  color: #fff;
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 13px 20px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity var(--transition);
+  align-self: flex-end;
+}
+.btn-ask:hover:not(:disabled) { opacity: .88; }
+.btn-ask:disabled { opacity: .35; cursor: not-allowed; }
+
+/* Voice panel */
+.voice-panel { display: none; flex-direction: column; gap: 14px; }
+.voice-panel.visible { display: flex; }
+
+.voice-controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.btn-record {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border-2);
+  color: var(--text-1);
+  font-family: "DM Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 10px 18px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition);
+}
+.btn-record:hover:not(:disabled) {
+  background: var(--surface-2);
+  border-color: var(--border-2);
+}
+.btn-record:disabled { opacity: .35; cursor: not-allowed; }
+.btn-record.recording {
+  border-color: var(--red);
+  color: var(--red);
+  background: var(--red-dim);
+}
+
+.rec-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--text-3);
+  flex-shrink: 0;
+  transition: background var(--transition);
+}
+.btn-record.recording .rec-dot {
+  background: var(--red);
+  animation: blink 1.1s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+.timer {
+  font-size: 13px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .04em;
+  min-width: 44px;
+}
+.voice-hint {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+/* Error strip */
+.err-strip {
+  display: none;
+  padding: 9px 14px;
+  background: var(--red-dim);
+  border: 1px solid rgba(224,92,92,.25);
+  border-radius: var(--radius);
+  font-size: 12px;
+  color: var(--red);
+  margin-top: 6px;
+}
+
+/* ─── Response area ───────────────────────────────────────── */
+.response-area {
+  flex: 1;
+  padding: 36px 40px;
+  overflow-y: auto;
+}
+
+/* Empty state */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100%;
+  min-height: 200px;
+  gap: 10px;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: fadein .5s .1s forwards;
+}
+@keyframes fadein { to { opacity:1; transform:translateY(0); } }
+
+.empty-state .eg-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  margin-bottom: 4px;
+}
+.empty-state .eg-item {
+  font-size: 13px;
+  color: var(--text-3);
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+  width: 100%;
+  max-width: 480px;
+  cursor: default;
+  transition: color var(--transition);
+}
+.empty-state .eg-item:hover { color: var(--text-2); }
+
+/* Loading */
+.loading-state {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  padding: 28px 0;
+  color: var(--text-3);
+  font-size: 13px;
+}
+.loading-state.visible { display: flex; }
+
+.spinner {
+  width: 16px; height: 16px;
+  border: 1.5px solid var(--border-2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Response content */
+.response-content {
+  display: none;
+  flex-direction: column;
+  gap: 24px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity .25s, transform .25s;
+}
+.response-content.visible {
+  display: flex;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.resp-meta {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-bottom: -8px;
+}
+.resp-tag {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.resp-latency {
+  font-size: 11px;
+  color: var(--text-3);
+}
+
+.answer-body {
+  font-size: 15px;
+  line-height: 1.75;
+  color: var(--text-1);
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-width: 72ch;
+}
+
+/* Sources */
+.sources-block { display: flex; flex-direction: column; gap: 8px; }
+.sources-heading {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.source-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-2);
+  border-radius: 3px;
+  padding: 4px 10px;
+  font-size: 11px;
+  color: var(--text-2);
+}
+.chip .chip-name { color: var(--text-1); font-weight: 500; }
+.chip .chip-sep  { color: var(--text-3); }
+
+/* Audio player */
+.audio-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.audio-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+audio {
+  width: 100%;
+  max-width: 420px;
+  height: 36px;
+  border-radius: var(--radius);
+  accent-color: var(--accent);
+  background: var(--surface-2);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <!-- ── Sidebar ─────────────────────────────────────────── -->
+  <aside class="sidebar">
+
+    <div class="sidebar-brand">
+      <span class="wordmark">RAG Voice<br>Assistant</span>
+      <span class="sub">Document Intelligence</span>
+    </div>
+
+    <div class="status-row">
+      <div class="status-dot" id="status-dot"></div>
+      <span class="status-label" id="status-label">Checking…</span>
+    </div>
+
+    <div class="sidebar-rule"></div>
+
+    <p class="sidebar-section-title">Knowledge Base</p>
+
+    <button class="btn-ingest" id="ingest-btn" onclick="triggerIngest()">
+      <span>Ingest documents</span>
+      <span class="arrow">&#8594;</span>
+    </button>
+    <div class="ingest-feedback" id="ingest-feedback"></div>
+
+    <div class="sidebar-desc">
+      <p>Place PDF, DOCX, or TXT files in the <code style="font-size:11px;color:var(--text-2)">data/</code> folder, then ingest to index them into the vector store.</p>
+    </div>
+
+  </aside>
+
+  <!-- ── Main ───────────────────────────────────────────── -->
+  <main class="main">
+
+    <!-- Top bar: mode toggle -->
+    <div class="topbar">
+      <span class="topbar-label">Input</span>
+      <button class="mode-tab active" id="tab-text"  onclick="switchMode('text')">Text</button>
+      <button class="mode-tab"        id="tab-voice" onclick="switchMode('voice')">Voice</button>
+    </div>
+
+    <!-- Query area -->
+    <div class="query-area">
+      <p class="query-label" id="query-label">Ask a question</p>
+
+      <!-- Text panel -->
+      <div class="text-panel" id="text-panel">
+        <div class="input-row">
+          <textarea
+            id="text-input"
+            placeholder="Type your question about the ingested documents…"
+            rows="2"
+          ></textarea>
+          <button class="btn-ask" id="ask-btn" onclick="submitText()">Ask</button>
+        </div>
+        <div class="err-strip" id="text-err"></div>
+      </div>
+
+      <!-- Voice panel -->
+      <div class="voice-panel" id="voice-panel">
+        <div class="voice-controls">
+          <button class="btn-record" id="record-btn" onclick="toggleRecording()">
+            <span class="rec-dot" id="rec-dot"></span>
+            <span id="record-label">Record</span>
+          </button>
+          <span class="timer" id="timer"></span>
+          <span class="voice-hint" id="voice-hint">Press record, speak, press stop.</span>
+        </div>
+        <div class="err-strip" id="voice-err"></div>
+      </div>
+    </div>
+
+    <!-- Response area -->
+    <div class="response-area" id="response-area">
+
+      <div class="empty-state" id="empty-state">
+          <p class="eg-label">Example questions</p>
+            <div class="eg-item" onclick="fillExample(this)">What is the application layer in computer networks?
+            </div>
+            <div class="eg-item" onclick="fillExample(this)">How does HTTP work in a client-server model?
+            </div>
+            <div class="eg-item" onclick="fillExample(this)">What is the difference between HTTP and FTP?</div>
+            <div class="eg-item" onclick="fillExample(this)">What does DNS do in a network?</div>
+    </div>
+
+      <div class="loading-state" id="loading-state">
+        <div class="spinner"></div>
+        <span id="loading-label">Processing…</span>
+      </div>
+
+      <div class="response-content" id="response-content">
+        <div class="resp-meta">
+          <span class="resp-tag">Response</span>
+          <span class="resp-latency" id="resp-latency"></span>
+        </div>
+        <div class="answer-body" id="answer-body"></div>
+        <div class="sources-block" id="sources-block"></div>
+        <div class="audio-wrap"   id="audio-wrap" style="display:none"></div>
+      </div>
+
+    </div>
+
+  </main>
+</div>
+
+<script>
+const API = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:8000'
+  : 'https://YOUR_HF_SPACE_URL';
+
+/* ── Health ──────────────────────────────────────────────── */
+async function checkHealth() {
+  const dot   = document.getElementById('status-dot');
+  const label = document.getElementById('status-label');
+  try {
+    const r = await fetch(`${API}/health`);
+    if (r.ok) {
+      dot.className   = 'status-dot ok';
+      label.textContent = 'Backend online';
+    } else throw new Error();
+  } catch {
+    dot.className   = 'status-dot err';
+    label.textContent = 'Backend offline';
+  }
+}
+checkHealth();
+
+/* ── Mode switch ─────────────────────────────────────────── */
+let currentMode = 'text';
+function switchMode(mode) {
+  currentMode = mode;
+  document.getElementById('tab-text').classList.toggle('active',  mode === 'text');
+  document.getElementById('tab-voice').classList.toggle('active', mode === 'voice');
+  document.getElementById('text-panel').style.display  = mode === 'text'  ? '' : 'none';
+  const vp = document.getElementById('voice-panel');
+  vp.style.display = mode === 'voice' ? 'flex' : 'none';
+  document.getElementById('query-label').textContent =
+    mode === 'text' ? 'Ask a question' : 'Voice query';
+  clearErr('text-err');
+  clearErr('voice-err');
+}
+
+/* ── Example click ───────────────────────────────────────── */
+function fillExample(el) {
+  switchMode('text');
+  document.getElementById('text-input').value = el.textContent.trim();
+  document.getElementById('text-input').focus();
+}
+
+/* ── Helpers ─────────────────────────────────────────────── */
+function showErr(id, msg) {
+  const el = document.getElementById(id);
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+function clearErr(id) {
+  const el = document.getElementById(id);
+  el.textContent = '';
+  el.style.display = 'none';
+}
+function escHtml(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function showLoading(msg) {
+  document.getElementById('empty-state').style.display    = 'none';
+  document.getElementById('response-content').classList.remove('visible');
+  document.getElementById('loading-state').classList.add('visible');
+  document.getElementById('loading-label').textContent = msg;
+}
+function hideLoading() {
+  document.getElementById('loading-state').classList.remove('visible');
+}
+
+/* ── Render response ─────────────────────────────────────── */
+function renderResponse({ answer, sources = [], audioBlob = null, latencyMs = null }) {
+  hideLoading();
+  document.getElementById('empty-state').style.display = 'none';
+
+  document.getElementById('answer-body').textContent = answer;
+
+  if (latencyMs !== null) {
+    document.getElementById('resp-latency').textContent = `${(latencyMs / 1000).toFixed(2)}s`;
+  } else {
+    document.getElementById('resp-latency').textContent = '';
+  }
+
+  // Sources
+  const sb = document.getElementById('sources-block');
+  if (sources && sources.length) {
+    const unique = [...new Map(sources.map(s => [s.filename || s.source, s])).values()];
+    let html = `<p class="sources-heading">Sources</p><div class="source-chips">`;
+    unique.forEach(s => {
+      const name  = escHtml(s.filename || s.source || 'unknown');
+      const chunk = s.chunk_index != null ? `<span class="chip-sep">·</span> chunk ${s.chunk_index}` : '';
+      html += `<span class="chip"><span class="chip-name">${name}</span>${chunk}</span>`;
+    });
+    html += `</div>`;
+    sb.innerHTML = html;
+    sb.style.display = '';
+  } else {
+    sb.innerHTML = '';
+    sb.style.display = 'none';
+  }
+
+  // Audio
+  const aw = document.getElementById('audio-wrap');
+  if (audioBlob) {
+    const url = URL.createObjectURL(audioBlob);
+    aw.innerHTML = `<p class="audio-label">Audio response</p><audio controls src="${url}" id="resp-audio"></audio>`;
+    aw.style.display = '';
+    document.getElementById('resp-audio').play().catch(() => {});
+  } else {
+    aw.innerHTML = '';
+    aw.style.display = 'none';
+  }
+
+  // Show with animation
+  const rc = document.getElementById('response-content');
+  rc.classList.remove('visible');
+  void rc.offsetWidth; // reflow
+  rc.classList.add('visible');
+}
+
+/* ── Text query ──────────────────────────────────────────── */
+async function submitText() {
+  clearErr('text-err');
+  const q = document.getElementById('text-input').value.trim();
+  if (!q) return;
+  const btn = document.getElementById('ask-btn');
+  btn.disabled = true;
+  showLoading('Retrieving and generating…');
+  const t0 = performance.now();
+  try {
+    const res = await fetch(`${API}/query`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ question: q }),
+    });
+    if (!res.ok) {
+      const e = await res.json().catch(() => ({}));
+      throw new Error(e.detail || `HTTP ${res.status}`);
+    }
+    const data = await res.json();
+    renderResponse({ answer: data.answer, sources: data.sources, latencyMs: performance.now() - t0 });
+  } catch (e) {
+    hideLoading();
+    showErr('text-err', e.message);
+    document.getElementById('empty-state').style.display = '';
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+document.getElementById('text-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submitText(); }
+});
+
+/* Auto-resize textarea */
+document.getElementById('text-input').addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 160) + 'px';
+});
+
+/* ── Voice recording ─────────────────────────────────────── */
+let mediaRecorder = null;
+let audioChunks   = [];
+let timerIv       = null;
+let elapsed       = 0;
+
+function fmt(s) {
+  return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+}
+
+async function toggleRecording() {
+  if (mediaRecorder && mediaRecorder.state === 'recording') {
+    stopRecording();
+  } else {
+    await startRecording();
+  }
+}
+
+async function startRecording() {
+  clearErr('voice-err');
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const mime = ['audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus','audio/mp4']
+      .find(t => MediaRecorder.isTypeSupported(t)) || '';
+    mediaRecorder  = mime ? new MediaRecorder(stream, { mimeType: mime }) : new MediaRecorder(stream);
+    audioChunks    = [];
+    mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
+    mediaRecorder.onstop = async () => {
+      stream.getTracks().forEach(t => t.stop());
+      const blob = new Blob(audioChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
+      await sendVoice(blob);
+    };
+    mediaRecorder.start(200);
+    // UI
+    elapsed = 0;
+    document.getElementById('timer').textContent = fmt(0);
+    timerIv = setInterval(() => { elapsed++; document.getElementById('timer').textContent = fmt(elapsed); }, 1000);
+    document.getElementById('record-btn').classList.add('recording');
+    document.getElementById('record-label').textContent = 'Stop';
+    document.getElementById('voice-hint').textContent   = 'Recording — press Stop when done.';
+  } catch(e) {
+    showErr('voice-err', 'Microphone access denied: ' + e.message);
+  }
+}
+
+function stopRecording() {
+  clearInterval(timerIv);
+  document.getElementById('timer').textContent = '';
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+  const btn = document.getElementById('record-btn');
+  btn.classList.remove('recording');
+  btn.disabled = true;
+  document.getElementById('record-label').textContent = 'Processing…';
+  document.getElementById('voice-hint').textContent   = 'Sending to server…';
+}
+
+async function sendVoice(blob) {
+  showLoading('Transcribing and generating…');
+  const ext = blob.type.includes('webm') ? 'webm'
+            : blob.type.includes('ogg')  ? 'ogg'
+            : blob.type.includes('mp4')  ? 'mp4' : 'wav';
+  const fd = new FormData();
+  fd.append('file', blob, `rec.${ext}`);
+  const t0 = performance.now();
+  try {
+    const res = await fetch(`${API}/voice/ask`, { method: 'POST', body: fd });
+    if (!res.ok) {
+      const e = await res.json().catch(() => ({}));
+      throw new Error(e.detail || `HTTP ${res.status}`);
+    }
+    const data = await res.json();
+    let audioBlob = null;
+    if (data.audio_path) {
+      try {
+        const ar = await fetch(`${API}/voice/audio?path=${encodeURIComponent(data.audio_path)}`);
+        if (ar.ok) audioBlob = await ar.blob();
+      } catch {}
+    }
+    renderResponse({ answer: data.answer, sources: data.sources, audioBlob, latencyMs: performance.now() - t0 });
+  } catch(e) {
+    hideLoading();
+    showErr('voice-err', e.message);
+    document.getElementById('empty-state').style.display = '';
+  } finally {
+    const btn = document.getElementById('record-btn');
+    btn.disabled = false;
+    btn.classList.remove('recording');
+    document.getElementById('record-label').textContent = 'Record';
+    document.getElementById('voice-hint').textContent   = 'Press record, speak, press stop.';
+  }
+}
+
+/* ── Ingest ──────────────────────────────────────────────── */
+async function triggerIngest() {
+  const btn = document.getElementById('ingest-btn');
+  const fb  = document.getElementById('ingest-feedback');
+  btn.disabled  = true;
+  fb.className  = 'ingest-feedback';
+  fb.textContent = 'Ingesting…';
+  try {
+    const res = await fetch(`${API}/ingest`, { method: 'POST' });
+    if (!res.ok) {
+      const e = await res.json().catch(() => ({}));
+      throw new Error(e.detail || `HTTP ${res.status}`);
+    }
+    const data = await res.json();
+    fb.className  = 'ingest-feedback ok';
+    fb.textContent = `${data.total_chunks} chunks indexed`;
+    checkHealth();
+  } catch(e) {
+    fb.className  = 'ingest-feedback err';
+    fb.textContent = e.message;
+  } finally {
+    btn.disabled = false;
+  }
+}
+</script>
+</body>
+</html>

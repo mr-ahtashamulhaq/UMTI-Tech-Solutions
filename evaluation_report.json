@@ -1,0 +1,426 @@
+{
+  "total_questions": 20,
+  "average_latency_seconds": 0.896,
+  "results": [
+    {
+      "id": 1,
+      "question": "What is SEEBot?",
+      "answer": "SEEBot is a Secure and Economical Enterprise Chatbot powered by open-source Large Language Models (LLMs) with a Retrieval-Augmented Generation (RAG) approach.",
+      "sources": [
+        {
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf",
+          "chunk_index": 16
+        },
+        {
+          "chunk_index": 17,
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf"
+        },
+        {
+          "chunk_index": 7,
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf"
+        }
+      ],
+      "latency_seconds": 3.133,
+      "status": "ok"
+    },
+    {
+      "id": 2,
+      "question": "What problem does SEEBot solve for enterprise chatbots?",
+      "answer": "SEEBot solves two major problems for enterprise chatbots:   1. Privacy concerns, as user data is often used for model training in traditional approaches. 2. High costs for enterprises, as they rely on external service providers.   SEEBot addresses these challenges by providing a secure and economical solution using open-source LLMs, allowing for on-premise deployment and ensuring full data privacy and security.",
+      "sources": [
+        {
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf",
+          "chunk_index": 7
+        },
+        {
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf",
+          "chunk_index": 5
+        },
+        {
+          "chunk_index": 13,
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf"
+        }
+      ],
+      "latency_seconds": 0.828,
+      "status": "ok"
+    },
+    {
+      "id": 3,
+      "question": "Which open-source LLMs were evaluated in the SEEBot research?",
+      "answer": "Mistral 7B and Llama2 (both 7B and 13B) and BAAI were the open-source LLMs evaluated in the SEEBot research, although Llama2 was also evaluated in a paid version, and GPT-3.5 Turbo was a paid LLM.",
+      "sources": [
+        {
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf",
+          "chunk_index": 40
+        },
+        {
+          "chunk_index": 39,
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf"
+        },
+        {
+          "chunk_index": 14,
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf"
+        }
+      ],
+      "latency_seconds": 1.059,
+      "status": "ok"
+    },
+    {
+      "id": 4,
+      "question": "What is the PrivateGPT architecture used by SEEBot?",
+      "answer": "I don't have enough information to answer that.",
+      "sources": [
+        {
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf",
+          "chunk_index": 5
+        },
+        {
+          "chunk_index": 8,
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf"
+        },
+        {
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf",
+          "chunk_index": 13
+        }
+      ],
+      "latency_seconds": 0.794,
+      "status": "ok"
+    },
+    {
+      "id": 5,
+      "question": "How does SEEBot ensure data privacy?",
+      "answer": "SEEBot ensures data privacy by operating within an organization's infrastructure, which eliminates the risk of data leakage.",
+      "sources": [
+        {
+          "chunk_index": 8,
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf"
+        },
+        {
+          "chunk_index": 13,
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf"
+        },
+        {
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf",
+          "chunk_index": 7
+        }
+      ],
+      "latency_seconds": 1.568,
+      "status": "ok"
+    },
+    {
+      "id": 6,
+      "question": "Which LLM performed best in faithfulness and relevance in the SEEBot study?",
+      "answer": "Mistral 7B outperformed others in faithfulness and relevancy.",
+      "sources": [
+        {
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf",
+          "chunk_index": 40
+        },
+        {
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf",
+          "chunk_index": 4
+        },
+        {
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf",
+          "chunk_index": 39
+        }
+      ],
+      "latency_seconds": 0.667,
+      "status": "ok"
+    },
+    {
+      "id": 7,
+      "question": "What embedding models were compared in the SEEBot evaluation?",
+      "answer": "OpenAI and BAAI embedding models were compared in the SEEBot evaluation.",
+      "sources": [
+        {
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf",
+          "chunk_index": 14
+        },
+        {
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf",
+          "chunk_index": 9
+        },
+        {
+          "chunk_index": 4,
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf"
+        }
+      ],
+      "latency_seconds": 0.631,
+      "status": "ok"
+    },
+    {
+      "id": 8,
+      "question": "What benchmark dataset was used to evaluate SEEBot?",
+      "answer": "The benchmark dataset of 44 questions from the Paul Graham Dataset was used to evaluate SEEBot.",
+      "sources": [
+        {
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf",
+          "chunk_index": 8
+        },
+        {
+          "chunk_index": 18,
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf"
+        },
+        {
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf",
+          "chunk_index": 9
+        }
+      ],
+      "latency_seconds": 0.574,
+      "status": "ok"
+    },
+    {
+      "id": 9,
+      "question": "What performance metrics were used to evaluate the LLMs in SEEBot?",
+      "answer": "The performance metrics used to evaluate the LLMs in SEEBot were faithfulness, relevance, and inference time.",
+      "sources": [
+        {
+          "chunk_index": 8,
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf"
+        },
+        {
+          "chunk_index": 40,
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf"
+        },
+        {
+          "chunk_index": 14,
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf"
+        }
+      ],
+      "latency_seconds": 0.735,
+      "status": "ok"
+    },
+    {
+      "id": 10,
+      "question": "How much cost reduction does SEEBot offer compared to cloud-based solutions?",
+      "answer": "I don't have enough information to answer that.",
+      "sources": [
+        {
+          "chunk_index": 8,
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf"
+        },
+        {
+          "chunk_index": 9,
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf"
+        },
+        {
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf",
+          "chunk_index": 14
+        }
+      ],
+      "latency_seconds": 0.566,
+      "status": "ok"
+    },
+    {
+      "id": 11,
+      "question": "What is Retrieval-Augmented Generation (RAG)?",
+      "answer": "I don't have enough information to answer that.",
+      "sources": [
+        {
+          "chunk_index": 7,
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf"
+        },
+        {
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf",
+          "chunk_index": 5
+        },
+        {
+          "chunk_index": 16,
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf"
+        }
+      ],
+      "latency_seconds": 0.582,
+      "status": "ok"
+    },
+    {
+      "id": 12,
+      "question": "How does GPT-3.5 Turbo compare to Mistral 7B in the SEEBot study?",
+      "answer": "GPT-3.5 Turbo achieves faster inference times compared to Mistral 7B, but in terms of faithfulness and relevance, Mistral 7B is nearly the same as GPT-3.5 Turbo.",
+      "sources": [
+        {
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf",
+          "chunk_index": 4
+        },
+        {
+          "chunk_index": 40,
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf"
+        },
+        {
+          "chunk_index": 8,
+          "filename": "SEEBot_Leveraging_Open-Source_LLMs_and_RAG_for_Secure_and_Economical_Enterprise_Chatbots.pdf"
+        }
+      ],
+      "latency_seconds": 0.756,
+      "status": "ok"
+    },
+    {
+      "id": 13,
+      "question": "What is Unicorn Studio used for?",
+      "answer": "Unicorn Studio is used for generating and customizing web components and designs, including buttons, nav bars, animations, gradients, and interactive elements, all powered by AI.",
+      "sources": [
+        {
+          "filename": "AI Generated Components.docx",
+          "chunk_index": 1
+        },
+        {
+          "chunk_index": 2,
+          "filename": "AI Generated Components.docx"
+        },
+        {
+          "filename": "AI Generated Components.docx",
+          "chunk_index": 4
+        }
+      ],
+      "latency_seconds": 0.596,
+      "status": "ok"
+    },
+    {
+      "id": 14,
+      "question": "What tools are needed to build AI-generated web components?",
+      "answer": "Unicorn Studio, Cursor, and Lovable are the tools needed to build AI-generated web components.",
+      "sources": [
+        {
+          "filename": "AI Generated Components.docx",
+          "chunk_index": 0
+        },
+        {
+          "chunk_index": 5,
+          "filename": "AI Generated Components.docx"
+        },
+        {
+          "filename": "AI Generated Components.docx",
+          "chunk_index": 1
+        }
+      ],
+      "latency_seconds": 0.681,
+      "status": "ok"
+    },
+    {
+      "id": 15,
+      "question": "How do you use AI prompts in Unicorn Studio?",
+      "answer": "To use AI prompts in Unicorn Studio, you need to copy the prompt and drop it into Cursor or Lovable. These tools will instantly generate the layout, customized for your brand.",
+      "sources": [
+        {
+          "filename": "AI Generated Components.docx",
+          "chunk_index": 2
+        },
+        {
+          "chunk_index": 1,
+          "filename": "AI Generated Components.docx"
+        },
+        {
+          "chunk_index": 4,
+          "filename": "AI Generated Components.docx"
+        }
+      ],
+      "latency_seconds": 0.725,
+      "status": "ok"
+    },
+    {
+      "id": 16,
+      "question": "What is the step-by-step workflow described for building websites with AI components?",
+      "answer": "The step-by-step workflow described consists of 2 steps:  Step 1 — Explore Unicorn Studio, where you visit Unicorn Studio, browse their collection of components, and choose the design element you want to incorporate into your project. Step 2 — Use the AI Prompts, where Unicorn Studio provides the AI prompts behind each design, allowing for full customization and instant results.",
+      "sources": [
+        {
+          "filename": "AI Generated Components.docx",
+          "chunk_index": 0
+        },
+        {
+          "filename": "AI Generated Components.docx",
+          "chunk_index": 2
+        },
+        {
+          "chunk_index": 5,
+          "filename": "AI Generated Components.docx"
+        }
+      ],
+      "latency_seconds": 0.889,
+      "status": "ok"
+    },
+    {
+      "id": 17,
+      "question": "What are the benefits of using Unicorn Studio for web development?",
+      "answer": "The benefits of using Unicorn Studio for web development include being able to instantly create beautiful web components, such as buttons, nav bars, animations, gradients, and interactive elements, all powered by AI, without requiring any coding experience. You can also copy the code directly into your project or use AI prompts to generate fully customized layouts for your brand.",
+      "sources": [
+        {
+          "filename": "AI Generated Components.docx",
+          "chunk_index": 1
+        },
+        {
+          "chunk_index": 2,
+          "filename": "AI Generated Components.docx"
+        },
+        {
+          "chunk_index": 4,
+          "filename": "AI Generated Components.docx"
+        }
+      ],
+      "latency_seconds": 0.763,
+      "status": "ok"
+    },
+    {
+      "id": 18,
+      "question": "How does Cursor help with AI-generated web components?",
+      "answer": "Cursor helps by generating layouts and customizing designs using AI prompts. You can copy the prompt from Unicorn Studio and drop it into Cursor, which will instantly generate the layout, customized for your brand.",
+      "sources": [
+        {
+          "filename": "AI Generated Components.docx",
+          "chunk_index": 5
+        },
+        {
+          "filename": "AI Generated Components.docx",
+          "chunk_index": 1
+        },
+        {
+          "chunk_index": 4,
+          "filename": "AI Generated Components.docx"
+        }
+      ],
+      "latency_seconds": 1.009,
+      "status": "ok"
+    },
+    {
+      "id": 19,
+      "question": "Can someone without coding experience use Unicorn Studio?",
+      "answer": "Yes, according to the context, no coding experience is required to use Unicorn Studio. You can simply copy the code and paste it into your project.",
+      "sources": [
+        {
+          "chunk_index": 2,
+          "filename": "AI Generated Components.docx"
+        },
+        {
+          "filename": "AI Generated Components.docx",
+          "chunk_index": 1
+        },
+        {
+          "filename": "AI Generated Components.docx",
+          "chunk_index": 4
+        }
+      ],
+      "latency_seconds": 0.661,
+      "status": "ok"
+    },
+    {
+      "id": 20,
+      "question": "What kind of web components can be generated with Unicorn Studio?",
+      "answer": "Beautiful web components that can be generated with Unicorn Studio include buttons, nav bars, animations, gradients, and interactive elements.",
+      "sources": [
+        {
+          "filename": "AI Generated Components.docx",
+          "chunk_index": 1
+        },
+        {
+          "filename": "AI Generated Components.docx",
+          "chunk_index": 2
+        },
+        {
+          "filename": "AI Generated Components.docx",
+          "chunk_index": 4
+        }
+      ],
+      "latency_seconds": 0.695,
+      "status": "ok"
+    }
+  ]
+}
