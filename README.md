@@ -1,3 +1,12 @@
+---
+title: RAG Voice Assistant
+emoji: 🎙️
+colorFrom: blue
+colorTo: cyan
+sdk: docker
+pinned: false
+---
+
 # RAG Voice Assistant
 
 A production-ready **Retrieval-Augmented Generation (RAG)** assistant that answers questions about your documents — by text **or** voice — with spoken audio responses.
