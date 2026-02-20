@@ -534,8 +534,20 @@ audio {
     </button>
     <div class="ingest-feedback" id="ingest-feedback"></div>
 
+    <div class="sidebar-rule" style="margin:20px 0 16px"></div>
+
+    <p class="sidebar-section-title">Upload Documents</p>
+
+    <label class="btn-ingest" id="upload-label" style="cursor:pointer">
+      <span id="upload-label-text">Choose files…</span>
+      <span class="arrow">&#8593;</span>
+      <input type="file" id="upload-input" accept=".pdf,.docx,.txt" multiple
+             style="display:none" onchange="handleUpload(this)" />
+    </label>
+    <div class="ingest-feedback" id="upload-feedback"></div>
+
     <div class="sidebar-desc">
-      <p>Place PDF, DOCX, or TXT files in the <code style="font-size:11px;color:var(--text-2)">data/</code> folder, then ingest to index them into the vector store.</p>
+      <p>Upload PDF, DOCX, or TXT files — they are saved to the server and indexed automatically.</p>
     </div>
 
   </aside>
@@ -888,6 +900,54 @@ async function triggerIngest() {
     fb.textContent = e.message;
   } finally {
     btn.disabled = false;
+  }
+}
+
+/* ── Upload + auto-ingest ────────────────────────────────── */
+async function handleUpload(input) {
+  const fb    = document.getElementById('upload-feedback');
+  const label = document.getElementById('upload-label-text');
+  const files = input.files;
+  if (!files || files.length === 0) return;
+
+  // Reset state
+  fb.className  = 'ingest-feedback';
+  fb.textContent = `Uploading ${files.length} file${files.length > 1 ? 's' : ''}…`;
+  label.textContent = 'Uploading…';
+  document.getElementById('upload-label').style.pointerEvents = 'none';
+  document.getElementById('upload-label').style.opacity = '0.45';
+
+  const fd = new FormData();
+  for (const file of files) fd.append('files', file);
+
+  try {
+    // 1 — Upload files
+    const upRes = await fetch(`${API}/upload`, { method: 'POST', body: fd });
+    if (!upRes.ok) {
+      const e = await upRes.json().catch(() => ({}));
+      throw new Error(e.detail || `Upload failed: HTTP ${upRes.status}`);
+    }
+    const upData = await upRes.json();
+    fb.textContent = `Uploaded: ${upData.uploaded.join(', ')} — indexing…`;
+
+    // 2 — Auto-ingest
+    const ingRes = await fetch(`${API}/ingest`, { method: 'POST' });
+    if (!ingRes.ok) {
+      const e = await ingRes.json().catch(() => ({}));
+      throw new Error(e.detail || `Ingest failed: HTTP ${ingRes.status}`);
+    }
+    const ingData = await ingRes.json();
+    fb.className  = 'ingest-feedback ok';
+    fb.textContent = `${upData.uploaded.length} file${upData.uploaded.length > 1 ? 's' : ''} uploaded — ${ingData.total_chunks} chunks indexed`;
+    checkHealth();
+  } catch(e) {
+    fb.className  = 'ingest-feedback err';
+    fb.textContent = e.message;
+  } finally {
+    label.textContent = 'Choose files…';
+    document.getElementById('upload-label').style.pointerEvents = '';
+    document.getElementById('upload-label').style.opacity = '';
+    input.value = ''; // allow re-selecting same file
   }
 }
 </script>

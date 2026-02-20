@@ -100,6 +100,30 @@ async def ingest_documents():
         raise HTTPException(status_code=500, detail=f"Error during ingestion: {str(e)}")
 
 
+@app.post("/upload")
+async def upload_documents(files: List[UploadFile] = File(...)):
+    """Save uploaded documents to the data/ folder."""
+    data_folder = "./data"
+    os.makedirs(data_folder, exist_ok=True)
+
+    ALLOWED = {".pdf", ".docx", ".txt"}
+    uploaded = []
+    for file in files:
+        ext = os.path.splitext(file.filename)[1].lower()
+        if ext not in ALLOWED:
+            raise HTTPException(
+                status_code=400,
+                detail=f"Unsupported file type '{ext}' for '{file.filename}'. Allowed: PDF, DOCX, TXT."
+            )
+        dest = os.path.join(data_folder, file.filename)
+        content = await file.read()
+        with open(dest, "wb") as f:
+            f.write(content)
+        uploaded.append(file.filename)
+
+    return {"uploaded": uploaded}
+
+
 @app.post("/voice/transcribe")
 async def voice_transcribe(file: UploadFile = File(...)):
     """Transcribe an uploaded audio file."""
