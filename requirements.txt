@@ -1,22 +1,21 @@
 # Core API
-fastapi==0.129.0
-uvicorn==0.41.0
-python-multipart==0.0.22
-pydantic==2.12.5
+fastapi==0.115.6
+uvicorn==0.32.1
+python-multipart==0.0.20
+pydantic==2.10.6
 
-# RAG pipeline
-groq==1.0.0
-google-genai==1.64.0
-chromadb==1.5.0
-langchain-text-splitters==1.1.1
+# RAG pipeline (same libraries as rag_using_langchain.py)
+langchain-text-splitters==0.3.4
+langchain-huggingface==0.1.2
+langchain-groq==0.2.5
+langchain-community==0.3.14
+faiss-cpu==1.9.0
+sentence-transformers==3.3.1
+groq==0.13.1
 
 # Document loaders
-pypdf==6.7.1
-python-docx==1.2.0
-
-# Voice
-gTTS==2.5.4
+pypdf==5.1.0
+python-docx==1.1.2
 
 # Utilities
-python-dotenv==1.2.1
-requests==2.32.5
+python-dotenv==1.0.1
