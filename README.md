@@ -80,14 +80,14 @@ Return answer to user
 
 ```
 ├── api/
-│   └── index.py         ← Entire RAG backend (one flat file)
+│   └── index.py     ← FastAPI Python serverless function
 ├── frontend/
-│   └── index.html       ← Upload + chat UI
-├── requirements.txt     ← Python dependencies
-├── vercel.json          ← Vercel routing config
-├── .env                 ← API keys (not committed)
+│   └── index.html   ← Static HTML
+├── rag.py           ← RAG pipeline (imported by api/index.py)
+├── requirements.txt
+├── vercel.json
 └── README.md
-```
+
 
 ---
 
@@ -109,30 +109,3 @@ uvicorn api.index:app --reload
 ```
 
 ---
-
-## Environment Variables
-
-| Variable | Required | Where to get it |
-|---|---|---|
-| `GROQ_API_KEY` | Yes | [console.groq.com](https://console.groq.com) |
-
-On Vercel, add `GROQ_API_KEY` in **Project Settings → Environment Variables**.
-
----
-
-## Key Concepts for Interviews
-
-**Why chunking?**  
-LLMs have a context window limit. A 100-page PDF won't fit in one prompt. We split it into 1000-character chunks so only the *relevant* pieces are sent.
-
-**Why overlap?**  
-`chunk_overlap=200` means adjacent chunks share 200 characters. This prevents important context from being cut off at a chunk boundary.
-
-**What is an embedding?**  
-A vector (array of numbers) that represents the *meaning* of text. Similar meanings → similar vectors. `all-MiniLM-L6-v2` produces 384-dimensional vectors.
-
-**What is FAISS?**  
-Facebook AI Similarity Search — an in-memory database optimized for finding nearest vectors. When you ask a question, it finds the 4 chunks whose vectors are closest to the question's vector.
-
-**Why only answer from context?**  
-The prompt explicitly says: *"Answer ONLY from the provided document context. If the context is insufficient, just say you don't know."* This prevents hallucination.

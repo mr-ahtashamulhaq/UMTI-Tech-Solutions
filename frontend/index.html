@@ -560,8 +560,10 @@
 
 <script>
 // ── Config ────────────────────────────────────────────────────────────
-// The frontend calls /api/* which Vercel routes to the Python serverless function.
-const API = "/api";
+// IMPORTANT: After deploying backend to Railway, paste your Railway URL below.
+// Example: "https://your-app-name.up.railway.app"
+// For local dev use: "http://localhost:8000"
+const API = "https://your-railway-url.up.railway.app";
 
 // ── Health check ──────────────────────────────────────────────────────
 async function checkHealth() {
