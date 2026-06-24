@@ -16,7 +16,10 @@ Flow (exactly like rag_using_langchain.py):
 
 import os
 import io
-import tempfile
+
+# Vercel serverless has a read-only filesystem.
+# HuggingFace model cache must go to /tmp (the only writable dir on Vercel).
+os.environ.setdefault("HF_HOME", "/tmp/huggingface")
 
 from fastapi import FastAPI, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
