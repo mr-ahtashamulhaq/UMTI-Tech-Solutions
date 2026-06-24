@@ -17,6 +17,10 @@ Flow:
 import os
 import io
 
+# On Railway/Vercel serverless, set the HuggingFace cache dir to /tmp
+# (the model downloads ~90MB on first start — needs a writable directory)
+os.environ.setdefault("HF_HOME", "/tmp/huggingface")
+
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_groq import ChatGroq
@@ -31,8 +35,9 @@ load_dotenv()
 
 
 # HuggingFace runs locally — no API key needed.
-# Downloads ~90MB model on first run, then cached.
+# Downloads ~90MB model on first run, then cached in /tmp/huggingface.
 embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+
 
 
 llm = ChatGroq(model="llama-3.3-70b-versatile", temperature=0.2)
